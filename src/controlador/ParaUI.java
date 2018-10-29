@@ -7,7 +7,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.text.JTextComponent;
 
@@ -33,11 +32,8 @@ public class ParaUI extends UI {
 	private void cargarPintarLista() {
 		getModeloListaLibros().removeAllElements();
 		getList().removeAll();
-		ArrayList<Libro> cargarLista = this.estanteria.cargarLista();
-		int i=0;
+		ArrayList<Libro> cargarLista = this.estanteria.getListaLibros();
 		for (Libro libro : cargarLista) {
-			i++;
-			System.out.println(i);
 			getModeloListaLibros().addElement(libro.getTitulo() + ";" + libro.getISBN());
 		}
 		getList().setModel(getModeloListaLibros());
@@ -107,7 +103,8 @@ public class ParaUI extends UI {
 		getList().addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				String isbn = getList().getSelectedValue().substring(getList().getSelectedValue().indexOf(';')+1,getList().getSelectedValue().length());
+				String isbn = getList().getSelectedValue().substring(getList().getSelectedValue().indexOf(';') + 1,
+						getList().getSelectedValue().length());
 				mostrarDatosPantalla(estanteria.buscarLibro(isbn));
 				enableComponents(true, getBtnBaja(), getBtnModificar(), getBtnAumentarEjemplares(),
 						getBtnVenderEjemplares());
@@ -158,9 +155,10 @@ public class ParaUI extends UI {
 			}
 		});
 	}
-public String getISBN() {
-	return getTxtISBN().getText();
-}
+
+	public String getISBN() {
+		return getTxtISBN().getText();
+	}
 
 	private void listenerBaja() {
 		getBtnBaja().addActionListener(e -> {
@@ -172,13 +170,13 @@ public String getISBN() {
 				if (dialog == 0) {
 					borradorDeLibros();
 				}
-			}else{
+			} else {
 				borradorDeLibros();
 			}
 		});
 	}
+
 	private void borradorDeLibros() {
-		String isbn = getISBN();
 		estanteria.borrarLibro(getISBN());
 		getModeloListaLibros().removeElementAt(getList().getSelectedIndex());
 		cleanAll();
@@ -187,14 +185,12 @@ public String getISBN() {
 
 	private void listenerVenderComprarEjemplares() {
 		getBtnOk().addActionListener(e -> {
-			String isbn = getISBN();
 			if (new Validador().validar(getPanelInformacion(), getLblMensaje())) {
 				if (getBtnVenderEjemplares().isEnabled()) {
 					enableComponents(false, getBtnVenderEjemplares());
-					if (estanteria.buscarLibro(isbn).getUnidades() > 0) {
-						if (estanteria.buscarLibro(isbn).getUnidades() >= Integer.valueOf(getTxtCambios().getText())) {
-							estanteria.decrementarEjemplares(getISBN(),
-									Integer.valueOf(getTxtCambios().getText()));
+					if (estanteria.buscarLibro(getISBN()).getUnidades() > 0) {
+						if (estanteria.buscarLibro(getISBN()).getUnidades() >= Integer.valueOf(getTxtCambios().getText())) {
+							estanteria.decrementarEjemplares(getISBN(), Integer.valueOf(getTxtCambios().getText()));
 							setMensaje(Mensaje.BAJA_COMPLETA_DISMINUIR.getMensaje());
 						} else {
 							setMensaje(Mensaje.LIBROS_INSUFICIENTES.getMensaje());
@@ -207,7 +203,7 @@ public String getISBN() {
 					estanteria.aumentarUnidades(getISBN(), Integer.valueOf(getTxtCambios().getText()));
 				}
 			}
-			getTxtEjemplares().setText(String.valueOf(estanteria.buscarLibro(isbn).getUnidades()));
+			getTxtEjemplares().setText(String.valueOf(estanteria.buscarLibro(getISBN()).getUnidades()));
 			getTxtCambios().setVisible(false);
 			getBtnOk().setVisible(false);
 		});
@@ -230,7 +226,8 @@ public String getISBN() {
 	}
 
 	private void cleanAll() {
-		cleanJTextComponents(getTxtAutor(), getTxtEjemplares(), getTxtISBN(), getTxtPaginas(), getTxtTitulo(),getTxtEditorial());
+		cleanJTextComponents(getTxtAutor(), getTxtEjemplares(), getTxtISBN(), getTxtPaginas(), getTxtTitulo(),
+				getTxtEditorial());
 		getComboTema().setSelectedIndex(0);
 		getBtnGroupCheck().clearSelection();
 		getBtnGroupRadio().clearSelection();

@@ -1,15 +1,10 @@
 package controlador;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeMap;
 
-import org.omg.Messaging.SyncScopeHelper;
-
-import modelo.Libro;
 import utiles.Utiles;
-
 
 public class AlmacenIndice<T, K> {
 	private String pathIndice;
@@ -86,27 +81,13 @@ public class AlmacenIndice<T, K> {
 		return indice;
 	}
 
-	/**
-	 * Almacen el elemnto de clase T con Clave K, hay que pasarla
-	 * 
-	 * @param t
-	 *            el objeto a grabar
-	 * @param k
-	 *            la propiedad clave o indice del objeto t
-	 * @return true si ha almacenado y false en caso contrario
-	 */
 	public boolean grabar(T t, K k) {
 		boolean retorno = false;
 		if (Utiles.comprobarExiste(pathIndice)) {
 			leerIndice();
 		}
-		System.out.println(this.indice);
-		// miro el ultimo indice. siempre hay un mapa aqui
 		Integer value = indice.size();
-		// si es el primer elemento lastentry sera null
-		// si al meterlo el valor es null es que NO esta repetido
 		if (indice.put(k, value) == null) {
-			// si se almacena bien en el archivo de datos
 			if (dao.grabar(pathDatos, t, true)) {
 				retorno = true;
 				dao.grabar(pathIndice, indice);
@@ -117,12 +98,14 @@ public class AlmacenIndice<T, K> {
 		return retorno;
 	}
 
-	public ArrayList<Object> obtenerColeccionValues() {
+	public ArrayList<Object> getKeyList() {
 		leerIndice();
 		ArrayList<Object> arrayList = new ArrayList<>();
-		for (Iterator iterator = indice.keySet().iterator(); iterator.hasNext();) {
-			Object itemKey =iterator.next();
-			arrayList.add(itemKey);
+		if (this.indice != null) {
+			for (Iterator iterator = indice.keySet().iterator(); iterator.hasNext();) {
+				Object itemKey = iterator.next();
+				arrayList.add(itemKey);
+			}
 		}
 		return arrayList;
 	}

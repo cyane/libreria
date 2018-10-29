@@ -48,6 +48,7 @@ public class UI extends JFrame {
 	private JMenuItem mntmVersion;
 	private JMenuItem mntmSalir;
 	private JScrollPane scrollPane;
+	
 
 
 	public JMenuItem getBtnVenderEjemplares() {

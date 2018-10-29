@@ -77,10 +77,6 @@ public class Libro implements Serializable, Indexable<String>, Comparable<Libro>
 		return this.unidades;
 	}
 
-	public void reducirUnidades(int unidades) {
-		this.unidades-=unidades;
-	}
-
 	public String getEditorial() {
 		return editorial;
 	}
