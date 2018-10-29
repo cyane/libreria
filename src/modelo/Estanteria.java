@@ -32,17 +32,15 @@ public class Estanteria implements Estanteriable {
 		 for (Object object : coleccionIsbn) {
 			 this.libros.add(buscarLibro(object.toString()));
 		}
-		System.out.println(this.libros);
 		return this.libros;
 	}
 	
 	public boolean insertarLibro(Libro libro) {
-		this.libros.add(libro);
 		return new AlmacenIndice<>(Utiles.pathLibrosIndice, Utiles.pathLibrosDatos).grabar(libro,libro.getISBN());
 	}
 
 	public boolean borrarLibro(String isbn) {
-		return new AlmacenIndice<>(Utiles.pathLibrosIndice, Utiles.pathLibrosDatos).borrar(buscarLibro(isbn));
+		return new AlmacenIndice<>(Utiles.pathLibrosIndice, Utiles.pathLibrosDatos).borrar(isbn);
 	}
 
 	public Libro buscarLibro(String isbn) {
@@ -55,19 +53,22 @@ public class Estanteria implements Estanteriable {
 
 	public void aumentarUnidades(String isbn, int unidades) {
 		Libro libro = buscarLibro(isbn);
-		libro.aumentarUnidades(unidades);
 		borrarLibro(isbn);
+		libro.aumentarUnidades(unidades);
 		insertarLibro(libro);		
 	}
 
-
-	public Libro buscarLibro(int index) {
-		return this.libros.get(index);
+	public void decrementarEjemplares(String isbn, int unidades) {
+		Libro libro = buscarLibro(isbn);
+		borrarLibro(isbn);
+		libro.reducirUnidades(unidades);
+		insertarLibro(libro);
 	}
 
 
-	public void decrementarEjemplares(String isbn, int unidades) {
-		buscarLibro(isbn).reducirUnidades(unidades);
+	public void guardar(String isbn) {
+		buscarLibro(isbn);
+		
 	}
 
 }

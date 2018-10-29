@@ -31,12 +31,18 @@ public class ParaUI extends UI {
 	}
 
 	private void cargarPintarLista() {
+		getModeloListaLibros().removeAllElements();
+		getList().removeAll();
 		ArrayList<Libro> cargarLista = this.estanteria.cargarLista();
+		int i=0;
 		for (Libro libro : cargarLista) {
+			i++;
+			System.out.println(i);
 			getModeloListaLibros().addElement(libro.getTitulo() + ";" + libro.getISBN());
 		}
 		getList().setModel(getModeloListaLibros());
 		getBtnOk().setVisible(false);
+		cargarLista.clear();
 	}
 
 	private void aniadirListeners() {
@@ -77,8 +83,8 @@ public class ParaUI extends UI {
 		getTxtISBN().addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				if (getTxtISBN().getText().length() == 13) {
-					Libro libro = estanteria.buscarLibro(getTxtISBN().getText());
+				if (getISBN().length() == 13) {
+					Libro libro = estanteria.buscarLibro(getISBN());
 					if (libro != null) {
 						mostrarDatosPantalla(libro);
 						setMensaje(Mensaje.MOSTRAR_LIBRO.getMensaje());
@@ -130,8 +136,8 @@ public class ParaUI extends UI {
 		getBtnModificar().addActionListener(e -> {
 			getTxtCambios().setVisible(false);
 			getBtnOk().setVisible(false);
-			enableAllForm(true);
-			editableJTextComponents(true, getTxtAutor(), getTxtPaginas(), getTxtTitulo());
+			editableJTextComponents(true, getTxtAutor(), getTxtPaginas(), getTxtTitulo(), getTxtEditorial(),
+					getTxtEjemplares());
 			enableComponents(false, getBtnBaja(), getBtnModificar());
 			enableComponents(true, getBtnGuardar());
 			setMensaje(Mensaje.MODIFICACION_PREPARADA.getMensaje());
@@ -143,13 +149,18 @@ public class ParaUI extends UI {
 			enableAllForm(false);
 			enableComponents(false, getBtnGuardar());
 			if (new Validador().validar(getPanelInformacion(), getLblMensaje())) {
-				recogerDatos(estanteria.buscarLibro(getTxtISBN().getText()));
-				cleanAll();
+				recogerDatos(estanteria.buscarLibro(getISBN()));
+				estanteria.borrarLibro(getISBN());
+				darAlta(new Libro());
 				cargarPintarLista();
+				cleanAll();
 				setMensaje(Mensaje.MODIFICACION_GUARDADA.getMensaje());
 			}
 		});
 	}
+public String getISBN() {
+	return getTxtISBN().getText();
+}
 
 	private void listenerBaja() {
 		getBtnBaja().addActionListener(e -> {
@@ -167,8 +178,8 @@ public class ParaUI extends UI {
 		});
 	}
 	private void borradorDeLibros() {
-		String isbn = getTxtISBN().getText();
-		estanteria.borrarLibro(getTxtISBN().getText());
+		String isbn = getISBN();
+		estanteria.borrarLibro(getISBN());
 		getModeloListaLibros().removeElementAt(getList().getSelectedIndex());
 		cleanAll();
 		setMensaje(Mensaje.BAJA_COMPLETA_ELIMINAR.getMensaje());
@@ -176,13 +187,13 @@ public class ParaUI extends UI {
 
 	private void listenerVenderComprarEjemplares() {
 		getBtnOk().addActionListener(e -> {
-			String isbn = getTxtISBN().getText();
+			String isbn = getISBN();
 			if (new Validador().validar(getPanelInformacion(), getLblMensaje())) {
 				if (getBtnVenderEjemplares().isEnabled()) {
 					enableComponents(false, getBtnVenderEjemplares());
 					if (estanteria.buscarLibro(isbn).getUnidades() > 0) {
 						if (estanteria.buscarLibro(isbn).getUnidades() >= Integer.valueOf(getTxtCambios().getText())) {
-							estanteria.decrementarEjemplares(getTxtISBN().getText(),
+							estanteria.decrementarEjemplares(getISBN(),
 									Integer.valueOf(getTxtCambios().getText()));
 							setMensaje(Mensaje.BAJA_COMPLETA_DISMINUIR.getMensaje());
 						} else {
@@ -193,7 +204,7 @@ public class ParaUI extends UI {
 					}
 				} else {
 					setMensaje(Mensaje.ADD_UNIDADES.getMensaje());
-					estanteria.aumentarUnidades(getTxtISBN().getText(), Integer.valueOf(getTxtCambios().getText()));
+					estanteria.aumentarUnidades(getISBN(), Integer.valueOf(getTxtCambios().getText()));
 				}
 			}
 			getTxtEjemplares().setText(String.valueOf(estanteria.buscarLibro(isbn).getUnidades()));
@@ -205,7 +216,7 @@ public class ParaUI extends UI {
 	private void listenerAlta() {
 		getBtnAlta().addActionListener(e -> {
 			if (new Validador().validar(getPanelInformacion(), getLblMensaje())) {
-				if (!estanteria.libroRepetido(getTxtISBN().getText())) {
+				if (!estanteria.libroRepetido(getISBN())) {
 					darAlta(new Libro());
 					enableAllForm(false);
 					enableComponents(false, getBtnAlta());
@@ -286,7 +297,7 @@ public class ParaUI extends UI {
 
 	private void darAlta(Libro libro) {
 		recogerDatos(libro);
-		getModeloListaLibros().addElement(getTxtTitulo().getText() + ";" + getTxtISBN().getText());
+		getModeloListaLibros().addElement(getTxtTitulo().getText() + ";" + getISBN());
 		getList().setModel(getModeloListaLibros());
 		estanteria.insertarLibro(libro);
 	}
@@ -298,7 +309,7 @@ public class ParaUI extends UI {
 		nuevoLibro.setFormato(1, getChckbxRustica().isSelected());
 		nuevoLibro.setFormato(2, getChckbxTapaDura().isSelected());
 		nuevoLibro.setFormato(3, getChckbxGrapado().isSelected());
-		nuevoLibro.setISBN(getTxtISBN().getText());
+		nuevoLibro.setISBN(getISBN());
 		nuevoLibro.setNumPaginas(Integer.valueOf(getTxtPaginas().getText()));
 		nuevoLibro.setTitulo(getTxtTitulo().getText());
 		nuevoLibro.setTema(getComboTema().getSelectedIndex());

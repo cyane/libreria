@@ -121,8 +121,8 @@ public class AlmacenIndice<T, K> {
 		leerIndice();
 		ArrayList<Object> arrayList = new ArrayList<>();
 		for (Iterator iterator = indice.keySet().iterator(); iterator.hasNext();) {
-			Object libro =iterator.next();
-			arrayList.add(libro);
+			Object itemKey =iterator.next();
+			arrayList.add(itemKey);
 		}
 		return arrayList;
 	}
