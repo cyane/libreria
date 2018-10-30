@@ -23,6 +23,7 @@ import java.awt.Color;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -120,12 +121,23 @@ public class UI extends JFrame {
 		menuBar.add(mnHelp);
 		
 		mntmVersion = new JMenuItem("Version");
+		mntmVersion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "Libreria con almacen indexado \nCreada por: Abel Hermoso \n"
+						+ "          Version 3.2");
+			}
+		});
 		mnHelp.add(mntmVersion);
 		
 		mntmSalir = new JMenuItem("Salir");
 		mntmSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				int dialog = JOptionPane.showConfirmDialog(null,
+						"Esta usted realmente seguro de que desea salir de la aplicacion");
+				if (dialog == 0) {
+					System.exit(0);
+				}
+				
 			}
 		});
 		mnHelp.add(mntmSalir);

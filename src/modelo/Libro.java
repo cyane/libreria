@@ -6,6 +6,7 @@ import controlador.Indexable;
 
 public class Libro implements Serializable, Indexable<String>, Comparable<Libro>{
 	
+	private static final long serialVersionUID = 9009726371390821461L;
 	//Propiedades
 	private String titulo;
 	private String autor;
