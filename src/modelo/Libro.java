@@ -1,6 +1,7 @@
 package modelo;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 public class Libro implements Serializable, Comparable<Libro> {
 
@@ -15,7 +16,22 @@ public class Libro implements Serializable, Comparable<Libro> {
 	private boolean estado;
 	private int unidades;
 	private String editorial;
-
+/*
+	public Libro() {
+		Field[] asd = this.getClass().getDeclaredFields();
+		for (int i = 0; i < asd.length; i++) {
+			System.out.println(asd[i].toString());
+		}
+		try {
+			asd[1].set(asd[1].getType(), "titulito");
+			asd[1].
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("titulo:"+this.titulo);
+	}
+*/
 	public String getISBN() {
 		return iSBN;
 	}
@@ -114,6 +130,5 @@ public class Libro implements Serializable, Comparable<Libro> {
 	public int hashCode() {
 		return this.iSBN.hashCode();
 	}
-	
-	
+
 }
