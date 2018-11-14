@@ -2,43 +2,56 @@ package modelo;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 
 public class Libro implements Serializable, Comparable<Libro> {
 
 	private static final long serialVersionUID = 9009726371390821461L;
 
+	private String isbn;
 	private String titulo;
 	private String autor;
-	private int tema;
-	private String iSBN;
-	private int numPaginas;
-	private boolean[] formato = new boolean[4];
-	private boolean estado;
-	private int unidades;
 	private String editorial;
-/*
+	private int numPaginas;
+	private String tema;
+	private int unidades;
+	private int estado;
+	private String formato;
+
 	public Libro() {
-		Field[] asd = this.getClass().getDeclaredFields();
-		for (int i = 0; i < asd.length; i++) {
-			System.out.println(asd[i].toString());
-		}
-		try {
-			asd[1].set(asd[1].getType(), "titulito");
-			asd[1].
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("titulo:"+this.titulo);
 	}
-*/
+
+	/**
+	 * 
+	 * -Funcionamiento del for
+	 * En el atributo i insertamos el objeto(que es un parametro) que esta
+	 * guardado en el map indexado a la clave con el nombre del atributo i
+	 * (este necesita ser igual que el nombre de su columna en la bbdd)
+	 * 
+	 * @param parametros esto es un HashMap con los datos del libro que hemos extraido de la bbdd, y los nombres de los campos en los que va cada uno 
+	 */
+	public Libro(HashMap<String, Object> parametros) {
+		Field[] atributos = this.getClass().getDeclaredFields();
+		for (int i = 0; i < atributos.length; i++) {
+			if (parametros.get(atributos[i].getName()) != null) {
+
+				try {
+					atributos[i].set(this, parametros.get(atributos[i].getName()));
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+				}
+			} else {
+				System.out.println(" no esta en la bbdd");
+			}
+		}
+	}
+
 	public String getISBN() {
-		return iSBN;
+		return this.isbn;
 	}
 
 	public void setISBN(String iSBN) {
 		assert (iSBN != null && !iSBN.isEmpty());
-		this.iSBN = iSBN;
+		this.isbn = iSBN;
 	}
 
 	public String getTitulo() {
@@ -59,11 +72,12 @@ public class Libro implements Serializable, Comparable<Libro> {
 		this.autor = autor;
 	}
 
-	public int getTema() {
+	public String getTema() {
 		return tema;
 	}
 
-	public void setTema(int tema) {
+	public void setTema(String tema) {
+		assert (tema != null && !tema.isEmpty());
 		this.tema = tema;
 	}
 
@@ -75,23 +89,24 @@ public class Libro implements Serializable, Comparable<Libro> {
 		this.numPaginas = numPaginas;
 	}
 
-	public boolean getFormato(int posicion) {
-		return formato[posicion];
+	public String getFormato() {
+		return this.formato;
 	}
 
-	public void setFormato(int posicion, boolean formato) {
-		this.formato[posicion] = formato;
+	public void setFormato(String formato) {
+		assert (formato != null && !formato.isEmpty());
+		this.formato = formato;
 	}
 
 	public void setUnidades(int unidades) {
 		this.unidades = unidades;
 	}
 
-	public boolean getEstado() {
+	public int getEstado() {
 		return estado;
 	}
 
-	public void setEstado(boolean estado) {
+	public void setEstado(int estado) {
 		this.estado = estado;
 	}
 
@@ -111,7 +126,7 @@ public class Libro implements Serializable, Comparable<Libro> {
 	@Override
 	public int compareTo(Libro o) {
 		assert (o != null);
-		return this.iSBN.compareTo(o.iSBN);
+		return this.isbn.compareTo(o.isbn);
 	}
 
 	@Override
@@ -120,7 +135,7 @@ public class Libro implements Serializable, Comparable<Libro> {
 		Libro libro = (Libro) obj;
 		boolean retorno = super.equals(obj);
 		if (!retorno) {
-			retorno = this.iSBN.equals(libro.iSBN);
+			retorno = this.isbn.equals(libro.isbn);
 		}
 		return retorno;
 
@@ -128,7 +143,7 @@ public class Libro implements Serializable, Comparable<Libro> {
 
 	@Override
 	public int hashCode() {
-		return this.iSBN.hashCode();
+		return this.isbn.hashCode();
 	}
 
 }

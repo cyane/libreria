@@ -1,13 +1,20 @@
 package controlador;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
 
+import javax.swing.AbstractButton;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.plaf.metal.MetalBorders.OptionDialogBorder;
 import javax.swing.text.JTextComponent;
 
 import modelo.Estanteria;
@@ -21,6 +28,7 @@ public class ParaUI extends UI {
 
 	public ParaUI() {
 		this.estanteria = new Estanteria();
+		rellenarComboTema();
 		cargarPintarLista();
 		getTxtCambios().setVisible(false);
 		enableAllForm(false);
@@ -28,6 +36,9 @@ public class ParaUI extends UI {
 		enableComponents(false, getBtnAlta(), getBtnGuardar(), getBtnModificar(), getBtnBaja(),
 				getBtnAumentarEjemplares(), getBtnVenderEjemplares());
 	}
+private void rellenarComboTema() {
+	getComboTema().setModel(new DefaultComboBoxModel<>(estanteria.cargarTemasLibro()));
+}
 
 	private void cargarPintarLista() {
 		getModeloListaLibros().removeAllElements();
@@ -52,6 +63,23 @@ public class ParaUI extends UI {
 		listenerVenderComprarEjemplares();
 		listenerComprar();
 		listenerVender();
+		listenerAddTema();
+		listenerDeleteTema();
+	}
+
+	private void listenerAddTema() {
+		getMntmAniadirTema().addActionListener(e -> {
+			String nombre = JOptionPane.showInputDialog("Introduzca el nombre del tema a añadir");
+			estanteria.insertar(nombre);
+			rellenarComboTema();
+		});
+	}
+	private void listenerDeleteTema() {
+		getMntmDeleteTema().addActionListener(e -> {
+			String nombre = (String) JOptionPane.showInputDialog(null, "no te olvides del where en el delete", "Seleccione el tema a borrar", 0, null, estanteria.cargarTemasLibro().toArray(), null);
+			estanteria.borrarTema(nombre);
+			rellenarComboTema();
+		});
 	}
 
 	private void listenerVender() {
@@ -267,9 +295,10 @@ public class ParaUI extends UI {
 	private void sacarDatosPantalla(Libro libro) {
 		getTxtTitulo().setText(libro.getTitulo());
 		getTxtISBN().setText(libro.getISBN());
+		getTxtEditorial().setText(libro.getEditorial());
 		getTxtAutor().setText(libro.getAutor());
 		getTxtPaginas().setText(String.valueOf(libro.getNumPaginas()));
-		getComboTema().setSelectedIndex(libro.getTema());
+		getComboTema().getModel().setSelectedItem(libro.getTema());
 		getTxtEditorial().setText(libro.getEditorial());
 		getTxtEjemplares().setText(String.valueOf(libro.getUnidades()));
 	}
@@ -279,13 +308,17 @@ public class ParaUI extends UI {
 	}
 
 	private void ponercheck(Libro libro) {
-		getChckbxCartone().setSelected(libro.getFormato(0));
-		getChckbxRustica().setSelected(libro.getFormato(1));
-		getChckbxTapaDura().setSelected(libro.getFormato(2));
+		Enumeration<AbstractButton> elements = getBtnGroupCheck().getElements();
+		while(elements.hasMoreElements()) {
+			AbstractButton button = elements.nextElement();
+			if(button.getText().equals(libro.getFormato())){
+				button.setSelected(true);
+			}
+		}
 	}
 
-	private void ponerRadiobtn(boolean estado) {
-		if (estado) {
+	private void ponerRadiobtn(int estado) {
+		if (estado>0) {
 			getRdbtnNovedad().setSelected(true);
 		} else {
 			getRdbtnReedicion().setSelected(true);
@@ -296,22 +329,28 @@ public class ParaUI extends UI {
 		recogerDatos(libro);
 		getModeloListaLibros().addElement(getTxtTitulo().getText() + ";" + getISBN());
 		getList().setModel(getModeloListaLibros());
-		estanteria.insertarLibro(libro);
+		estanteria.insertar(libro);
 	}
 
 	private void recogerDatos(Libro nuevoLibro) {
 		nuevoLibro.setAutor(getTxtAutor().getText());
-		nuevoLibro.setEstado(getRdbtnNovedad().isSelected());
-		nuevoLibro.setFormato(0, getChckbxCartone().isSelected());
-		nuevoLibro.setFormato(1, getChckbxRustica().isSelected());
-		nuevoLibro.setFormato(2, getChckbxTapaDura().isSelected());
-		nuevoLibro.setFormato(3, getChckbxGrapado().isSelected());
+		nuevoLibro.setEstado(getRdbtnNovedad().isSelected()?1:0);
+		recogercheck(nuevoLibro);
 		nuevoLibro.setISBN(getISBN());
 		nuevoLibro.setNumPaginas(Integer.valueOf(getTxtPaginas().getText()));
 		nuevoLibro.setTitulo(getTxtTitulo().getText());
-		nuevoLibro.setTema(getComboTema().getSelectedIndex());
+		nuevoLibro.setTema(getComboTema().getSelectedItem().toString());
 		nuevoLibro.setEditorial(getTxtEditorial().getText());
 		nuevoLibro.setUnidades(Integer.valueOf(getTxtEjemplares().getText()));
+	}
+	private void recogercheck(Libro libro) {
+		Enumeration<AbstractButton> elements = getBtnGroupCheck().getElements();
+		while(elements.hasMoreElements()) {
+			AbstractButton button = elements.nextElement();
+			if(button.isSelected()){
+				libro.setFormato(button.getText());
+			}
+		}
 	}
 
 }

@@ -11,7 +11,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import modelo.Tema;
 
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
@@ -72,6 +71,8 @@ public class UI extends JFrame {
 		return btnAumentarEjemplares;
 	}
 	private JMenuItem btnAumentarEjemplares;
+	private JMenuItem mntmAniadirTema;
+	private JMenuItem mntmDeletetema;
 	
 	public DefaultListModel<String> getModeloListaLibros() {
 		return modeloListaLibros;
@@ -123,10 +124,20 @@ public class UI extends JFrame {
 		mntmVersion = new JMenuItem("Version");
 		mntmVersion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Libreria con almacen indexado \nCreada por: Abel Hermoso \n"
-						+ "          Version 3.2");
+				JOptionPane.showMessageDialog(null, 
+						"Libreria que almacena en una base de datos \n"
+						+ "      Creada por: Abel Hermoso \n"
+						+ "             Version 4",
+						"Version Info", 1);
 			}
 		});
+		
+		mntmAniadirTema = new JMenuItem("A\u00F1adirTema");
+
+		mnHelp.add(mntmAniadirTema);
+		
+		mntmDeletetema = new JMenuItem("DeleteTema");
+		mnHelp.add(mntmDeletetema);
 		mnHelp.add(mntmVersion);
 		
 		mntmSalir = new JMenuItem("Salir");
@@ -203,6 +214,14 @@ public class UI extends JFrame {
 		paneEmergente.add(panelInformacion, gbc_panelInformacion);
 	} 
 	
+	public JMenuItem getMntmDeleteTema() {
+		return mntmDeletetema;
+	}
+
+	public JMenuItem getMntmAniadirTema() {
+		return mntmAniadirTema;
+	}
+
 	public JMenuItem getBtnNuevo() {
 		return btnNuevo;
 	}
@@ -276,7 +295,7 @@ public class UI extends JFrame {
 		return panelInformacion.getTxtISBN();
 	}
 
-	public JComboBox<Tema> getComboTema() {
+	public JComboBox<String> getComboTema() {
 		return panelInformacion.getComboTema();
 	}
 	public JLabel getLblMensaje() {

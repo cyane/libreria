@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
-import modelo.Tema;
 
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -30,7 +29,7 @@ public class PanelInformacion extends JPanel {
 	private JTextField txtAutor;
 	private JTextField txtPaginas;
 	private JTextField txtISBN;
-	private JComboBox<Tema> comboTema;
+	private JComboBox<String> comboTema;
 	private JLabel lblMensaje;
 	private JPanel panelEstado;
 	private JPanel panelOtro;
@@ -260,6 +259,7 @@ public class PanelInformacion extends JPanel {
 		panelOtro.add(chckbxCartone);
 		
 		chckbxGrapado = new JCheckBox("Grapado");
+		chckbxGrapado.setFont(FONT_ITALIC);
 		chckbxGrapado.setHorizontalAlignment(SwingConstants.CENTER);
 		chckbxGrapado.setBackground(Color.LIGHT_GRAY);
 		btnGroupCheck.add(chckbxGrapado);
@@ -285,7 +285,7 @@ public class PanelInformacion extends JPanel {
 		gbc_comboTema.gridx = 2;
 		gbc_comboTema.gridy = 6;
 		add(comboTema, gbc_comboTema);
-		comboTema.setModel(new DefaultComboBoxModel<Tema>(Tema.values()));
+		
 		
 		JLabel lblPaginas = new JLabel("Paginas:");
 		lblPaginas.setFont(FONT_BOLD);
@@ -364,7 +364,7 @@ public class PanelInformacion extends JPanel {
 		return txtISBN;
 	}
 
-	public JComboBox<Tema> getComboTema() {
+	public JComboBox<String> getComboTema() {
 		return comboTema;
 	}
 	

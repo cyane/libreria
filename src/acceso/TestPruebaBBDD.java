@@ -9,21 +9,21 @@ public class TestPruebaBBDD {
 		
 		Estanteria estanteria = new Estanteria();
 		Libro libro= new Libro();
+
+		libro.setISBN("00963984723");
+		libro.setTitulo("titulo");
 		libro.setAutor("autor");
 		libro.setEditorial("editorial");
-		libro.setEstado(false);
-		libro.setFormato(0, false);
-		libro.setFormato(1, false);
-		libro.setFormato(2, true);
-		libro.setFormato(3, false);
-		libro.setISBN("1231231231");
-		libro.setNumPaginas(2);
-		libro.setTema(4);
-		libro.setTitulo("titulo");
+		libro.setNumPaginas(3);
+		libro.setTema("Aventura");
 		libro.setUnidades(6);
-		estanteria.insertarLibro(libro);
-		estanteria.buscarLibro(libro.getISBN());
-		estanteria.aumentarUnidades(libro.getISBN(), 10);
+		libro.setEstado(0);
+		libro.setFormato("Grapado");
+		estanteria.insertar(libro);
+		libro = estanteria.buscarLibro(libro.getISBN());
+		System.out.println(libro.getUnidades());
+		estanteria.aumentarUnidades(libro.getISBN(), 11);
+		libro = estanteria.buscarLibro(libro.getISBN());
 		System.out.println(libro.getUnidades());
 		estanteria.borrarLibro(libro.getISBN());
 
