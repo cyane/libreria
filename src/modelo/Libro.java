@@ -3,7 +3,9 @@ package modelo;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Map;
 
+@Clave(clavePrimaria="isbn")
 public class Libro implements Serializable, Comparable<Libro> {
 
 	private static final long serialVersionUID = 9009726371390821461L;
@@ -28,19 +30,17 @@ public class Libro implements Serializable, Comparable<Libro> {
 	 * guardado en el map indexado a la clave con el nombre del atributo i
 	 * (este necesita ser igual que el nombre de su columna en la bbdd)
 	 * 
-	 * @param parametros esto es un HashMap con los datos del libro que hemos extraido de la bbdd, y los nombres de los campos en los que va cada uno 
+	 * @param datosLibro esto es un HashMap con los datos del libro que hemos extraido de la bbdd, y los nombres de los campos en los que va cada uno 
 	 */
-	public Libro(HashMap<String, Object> parametros) {
+	public Libro(Map<String, Object> datosLibro) {
 		Field[] atributos = this.getClass().getDeclaredFields();
 		for (int i = 0; i < atributos.length; i++) {
-			if (parametros.get(atributos[i].getName()) != null) {
-
+			if (datosLibro.get(atributos[i].getName()) != null) {
 				try {
-					atributos[i].set(this, parametros.get(atributos[i].getName()));
+					atributos[i].set(this, datosLibro.get(atributos[i].getName()));
 				} catch (IllegalArgumentException | IllegalAccessException e) {
 				}
 			} else {
-				System.out.println(" no esta en la bbdd");
 			}
 		}
 	}

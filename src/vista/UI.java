@@ -51,6 +51,16 @@ public class UI extends JFrame {
 	
 
 
+
+	public JMenuItem getMntmDeleteTema() {
+		return mntmDeletetema;
+	}
+	
+	
+	public JMenuItem getMntmUpdateTema() {
+		return mntmUpdatetema;
+	}
+
 	public JMenuItem getBtnVenderEjemplares() {
 		return btnVenderEjemplares;
 	}
@@ -73,6 +83,8 @@ public class UI extends JFrame {
 	private JMenuItem btnAumentarEjemplares;
 	private JMenuItem mntmAniadirTema;
 	private JMenuItem mntmDeletetema;
+	private JMenuItem mntmUpdatetema;
+	private JMenu mnTema;
 	
 	public DefaultListModel<String> getModeloListaLibros() {
 		return modeloListaLibros;
@@ -118,6 +130,18 @@ public class UI extends JFrame {
 		btnGuardar = new JMenuItem("Guardar");
 		mnModificar.add(btnGuardar);
 		
+		mnTema = new JMenu("Tema");
+		menuBar.add(mnTema);
+		
+		mntmAniadirTema = new JMenuItem("A\u00F1adirTema");
+		mnTema.add(mntmAniadirTema);
+		
+		mntmUpdatetema = new JMenuItem("UpdateTema");
+		mnTema.add(mntmUpdatetema);
+		
+		mntmDeletetema = new JMenuItem("DeleteTema");
+		mnTema.add(mntmDeletetema);
+		
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
 		
@@ -131,13 +155,6 @@ public class UI extends JFrame {
 						"Version Info", 1);
 			}
 		});
-		
-		mntmAniadirTema = new JMenuItem("A\u00F1adirTema");
-
-		mnHelp.add(mntmAniadirTema);
-		
-		mntmDeletetema = new JMenuItem("DeleteTema");
-		mnHelp.add(mntmDeletetema);
 		mnHelp.add(mntmVersion);
 		
 		mntmSalir = new JMenuItem("Salir");
@@ -214,9 +231,7 @@ public class UI extends JFrame {
 		paneEmergente.add(panelInformacion, gbc_panelInformacion);
 	} 
 	
-	public JMenuItem getMntmDeleteTema() {
-		return mntmDeletetema;
-	}
+	
 
 	public JMenuItem getMntmAniadirTema() {
 		return mntmAniadirTema;

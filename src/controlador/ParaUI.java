@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.AbstractButton;
 import javax.swing.DefaultComboBoxModel;
@@ -17,17 +18,18 @@ import javax.swing.JOptionPane;
 import javax.swing.plaf.metal.MetalBorders.OptionDialogBorder;
 import javax.swing.text.JTextComponent;
 
-import modelo.Estanteria;
+import acceso.AccesoLibroDAO;
+import acceso.Fachada;
 import modelo.Libro;
 import vista.UI;
 
 public class ParaUI extends UI {
 
 	private static final long serialVersionUID = 1L;
-	private Estanteria estanteria;
+	private Fachada estanteria;
 
 	public ParaUI() {
-		this.estanteria = new Estanteria();
+		this.estanteria = new Fachada();
 		rellenarComboTema();
 		cargarPintarLista();
 		getTxtCambios().setVisible(false);
@@ -43,7 +45,7 @@ private void rellenarComboTema() {
 	private void cargarPintarLista() {
 		getModeloListaLibros().removeAllElements();
 		getList().removeAll();
-		ArrayList<Libro> cargarLista = this.estanteria.getListaLibros();
+		List<Libro> cargarLista = this.estanteria.getListaLibros();
 		for (Libro libro : cargarLista) {
 			getModeloListaLibros().addElement(libro.getTitulo() + ";" + libro.getISBN());
 		}
@@ -64,21 +66,37 @@ private void rellenarComboTema() {
 		listenerComprar();
 		listenerVender();
 		listenerAddTema();
+		listenerUpdateTema();
 		listenerDeleteTema();
 	}
 
 	private void listenerAddTema() {
 		getMntmAniadirTema().addActionListener(e -> {
 			String nombre = JOptionPane.showInputDialog("Introduzca el nombre del tema a añadir");
-			estanteria.insertar(nombre);
+			if(nombre!=null) estanteria.insertar(nombre);
 			rellenarComboTema();
 		});
 	}
-	private void listenerDeleteTema() {
-		getMntmDeleteTema().addActionListener(e -> {
-			String nombre = (String) JOptionPane.showInputDialog(null, "no te olvides del where en el delete", "Seleccione el tema a borrar", 0, null, estanteria.cargarTemasLibro().toArray(), null);
-			estanteria.borrarTema(nombre);
+	private void listenerUpdateTema() {
+		getMntmUpdateTema().addActionListener(e -> {
+			String nombre = (String) JOptionPane.showInputDialog(null,"", "Seleccione el tema que desea editar", 1, null, estanteria.cargarTemasLibro().toArray(), null);
+			String nombreNuevo = (nombre!=null)?(String) JOptionPane.showInputDialog(null, "Inserte el nuevo nombre del tema"):null;
+			if(nombreNuevo!=null) estanteria.updateTema(nombre, nombreNuevo);
 			rellenarComboTema();
+		});
+	}
+
+	private void listenerDeleteTema(){
+		getMntmDeleteTema().addActionListener(e -> {
+			String nombre = (String) JOptionPane.showInputDialog(null,"no te olvides del where en el delete", "Seleccione el tema que desea editar", 1, null, estanteria.cargarTemasLibro().toArray(), null);
+			if(nombre!=null){ 
+				if(estanteria.borrarTema(nombre)){
+					rellenarComboTema();
+				}else{
+					JOptionPane.showMessageDialog(null,"no se ha podido borrar, ya que esta en uso");
+				}
+			}
+			;
 		});
 	}
 
